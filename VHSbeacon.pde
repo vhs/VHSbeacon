@@ -12,6 +12,8 @@
 #define CAPTURED_RED  1
 #define CAPTURED_BLUE 2
 int beacon_state = NEUTRAL;
+int resetEnabled = 0;
+int resetTime = 5000;
 
 #define IS_NEUTRAL (beacon_state == NEUTRAL)
 #define IS_RED     (beacon_state == CAPTURED_RED)
@@ -62,13 +64,15 @@ void loop() {
            switch (results.value) {
                case CAPTURE_RED:
                    beacon_state = CAPTURED_RED;
-  //                 reset_at = millis() + 5000;
                    update_LED( LED_RED );
+                   if (resetEnabled)
+                     reset_at = millis() + resetTime;
                    break;
                case CAPTURE_BLUE:
                    beacon_state = CAPTURED_BLUE;
- //                  reset_at = millis() + 5000;
                    update_LED( LED_BLUE );
+                   if (resetEnabled)
+                     reset_at = millis() + resetTime;
                    break;
            }
        }
