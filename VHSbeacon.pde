@@ -90,6 +90,7 @@ void loop() {
    while (millis() < do_until) {
      if (IS_NEUTRAL) {
          irsend.sendVHS(STATUS_RED, 2);
+         irsend.sendVHS(STATUS_BLUE, 2);
      }
      else if (IS_BLUE) {
          irsend.sendVHS(STATUS_RED, 2);
