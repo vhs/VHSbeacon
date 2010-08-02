@@ -20,8 +20,8 @@ int beacon_state = NEUTRAL;
 unsigned long reset_at = 0;
 
 /* For the Multicolour LEDs */
-#define LED_HIGH 64
-#define LED_LOW  0
+#define LED_LOW 0
+#define LED_HIGH 1
 #define LED_R_pin 11
 #define LED_G_pin 9
 #define LED_B_pin 10
@@ -49,6 +49,8 @@ void setup() {
   update_LED( LED_GREEN ); 
   delay(400);
   update_LED( LED_OFF );
+  delay(400);
+  update_LED( LED_GREEN ); // leave led as green at end of setup.
 }
 
 void loop() {
@@ -111,8 +113,8 @@ void update_LED ( int LED_COLOUR ) {
       green = LED_HIGH;
       break;
   }
-  analogWrite(LED_R_pin, red);
-  analogWrite(LED_G_pin, green);
-  analogWrite(LED_B_pin, blue);
+  digitalWrite(LED_R_pin, red);
+  digitalWrite(LED_G_pin, green);
+  digitalWrite(LED_B_pin, blue);
 }
 
