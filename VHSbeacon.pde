@@ -1,5 +1,31 @@
-// VHSbeacon - firmware for VHS beacon for blue robot challenge
-//
+/* VHSbeacon - firmware for VHS beacon for blue robot challenge
+ * Infrared Protocol
+ *
+ * The communication occurs via infrared pulse, on a 37.9khz
+ * carrier wave with 2 bits of information. A logical one is
+ * formed by a space of 600µS (1T) and a pulse of 1200µS (2T).
+ * A logical zero is formed by a space of 1T and a pulse of 1T.
+ *
+ * Protocol: START, COMMAND, TEAM
+ * START - after a space of at least 3T, a 3T pulse indicates
+ * the start of the message.
+ * COMMAND - a 0 bit indicates a capture message, sent from a
+ * robot to a beacon.
+ * - a 1 bit indicates a status message, sent from a
+ * beacon to a robot.
+ * TEAM - a 0 bit indicates the red team
+ * - a 1 bit indicates the blue team
+ *
+ * Example: Blue robot wishes to capture a beacon
+ *
+ *    _____ ___ ____   
+ *    |   | | | |  |
+ * ___|   |_| |_|  |
+ *
+ * A beacon indicates a neutral state by alternating red then 
+ * blue status message
+ *
+ */
 
 #include <IRremote.h>
 
@@ -56,49 +82,43 @@ void setup() {
 }
 
 void loop() {
-   unsigned long do_until = millis() + 100;
-
-   while (millis() < do_until) {
-     if (irrecv.decode(&results)) {
-       if ((results.bits == 1) || (results.bits == 2)) {
-           switch (results.value) {
-               case CAPTURE_RED:
-                   beacon_state = CAPTURED_RED;
-                   update_LED( LED_RED );
-                   if (resetEnabled)
-                     reset_at = millis() + resetTime;
-                   break;
-               case CAPTURE_BLUE:
-                   beacon_state = CAPTURED_BLUE;
-                   update_LED( LED_BLUE );
-                   if (resetEnabled)
-                     reset_at = millis() + resetTime;
-                   break;
-           }
+   if (irrecv.decode(&results)) {
+     if ((results.bits == 1) || (results.bits == 2)) {
+       switch (results.value) {
+         case CAPTURE_RED:
+           beacon_state = CAPTURED_RED;
+           update_LED( LED_RED );
+           if (resetEnabled)
+             reset_at = millis() + resetTime;
+           break;
+         case CAPTURE_BLUE:
+           beacon_state = CAPTURED_BLUE;
+           update_LED( LED_BLUE );
+           if (resetEnabled)
+             reset_at = millis() + resetTime;
+           break;
        }
-       irrecv.resume(); // Receive the next value
-     };
-   }
+    }
+    irrecv.resume(); // Receive the next value
+  }
 
-   if ((reset_at != 0) && (millis() >= reset_at)) {
-     beacon_state = NEUTRAL;
-     update_LED( LED_GREEN );
-     reset_at = 0;
-   }
-
-   do_until = millis() + 100;
-   while (millis() < do_until) {
-     if (IS_NEUTRAL) {
-         irsend.sendVHS(STATUS_RED, 2);
-         irsend.sendVHS(STATUS_BLUE, 2);
-     }
-     else if (IS_BLUE) {
-         irsend.sendVHS(STATUS_RED, 2);
-     }
-     else if (IS_RED) {
-         irsend.sendVHS(STATUS_BLUE, 2);
-     }
-   }
+  if ((reset_at != 0) && (millis() >= reset_at)) {
+    beacon_state = NEUTRAL;
+    update_LED( LED_GREEN );
+    reset_at = 0;
+  }
+  
+  // transmit beacon status
+  if (IS_NEUTRAL) {
+    irsend.sendVHS(STATUS_RED, 2);
+    irsend.sendVHS(STATUS_BLUE, 2);
+  }
+  else if (IS_BLUE) {
+    irsend.sendVHS(STATUS_RED, 2);
+  }
+  else if (IS_RED) {
+    irsend.sendVHS(STATUS_BLUE, 2);
+  }
 }
 
 void update_LED ( int LED_COLOUR ) {
