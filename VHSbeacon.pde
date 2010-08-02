@@ -52,9 +52,9 @@ void setup() {
 }
 
 void loop() {
-   unsigned long receive_until = millis() + 100;
+   unsigned long do_until = millis() + 100;
 
-   while (millis() < receive_until) {
+   while (millis() < do_until) {
      if (irrecv.decode(&results)) {
        if ((results.bits == 1) || (results.bits == 2)) {
            switch (results.value) {
@@ -80,8 +80,8 @@ void loop() {
      reset_at = 0;
    }
 
-   receive_until = millis() + 100;
-   while (millis() < receive_until) {
+   do_until = millis() + 100;
+   while (millis() < do_until) {
      if (IS_NEUTRAL) {
          irsend.sendVHS(STATUS_RED, 2);
      }
