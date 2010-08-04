@@ -1,0 +1,28 @@
+/* VHSbeacon - firmware for VHS beacon for blue robot challenge
+* Infrared Protocol
+*
+* The communication occurs via infrared pulse, on a 37.9khz
+* carrier wave with 2 bits of information. A logical one is
+* formed by a space of 600µS (1T) and a pulse of 1200µS (2T).
+* A logical zero is formed by a space of 1T and a pulse of 1T.
+*
+* Protocol: START, COMMAND, TEAM
+* START - after a space of at least 3T, a 3T pulse indicates
+* the start of the message.
+* COMMAND - a 0 bit indicates a capture message, sent from a
+* robot to a beacon.
+* - a 1 bit indicates a status message, sent from a
+* beacon to a robot.
+* TEAM - a 0 bit indicates the red team
+* - a 1 bit indicates the blue team
+*
+* Example: Blue robot wishes to capture a beacon
+*
+* _____ ___ ____
+* | | | | | |
+* ___| |_| |_| |
+*
+* A beacon indicates a neutral state by alternating red then
+* blue status message
+*
+*/
