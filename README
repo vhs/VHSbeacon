@@ -18,9 +18,9 @@
 *
 * Example: Blue robot wishes to capture a beacon
 *
-* _____ ___ ____
-* | | | | | |
-* ___| |_| |_| |
+*    _____ ___ ____
+*    |   | | | |  |
+* ___|   |_| |_|  |
 *
 * A beacon indicates a neutral state by alternating red then
 * blue status message
