@@ -119,57 +119,17 @@ void loop() {
   
   // transmit beacon status
   if (IS_NEUTRAL) {
-    //irsend.sendVHS(STATUS_RED, 2);
-    //irsend.sendVHS(STATUS_BLUE, 2);
-    sendBlue();
-    sendRed();
-    //Serial.println( "Neutral send" );
+    irsend.sendVHS(STATUS_RED, 2);
+    delay(1);
+    irsend.sendVHS(STATUS_BLUE, 2);
   }
   else if (IS_BLUE) {
-    //irsend.sendVHS(STATUS_RED, 2);
-    //Serial.println( "Blue send" );
-    sendBlue();
+    irsend.sendVHS(STATUS_RED, 2);
   }
   else if (IS_RED) {
-    //irsend.sendVHS(STATUS_BLUE, 2);
-    //Serial.println( "Red send" );
-    sendRed();
+    irsend.sendVHS(STATUS_BLUE, 2);
   }
   delay(1);
-}
-
-void sendBlue ( ) {
-  digitalWrite( IR_OUT, LOW );
-  delayMicroseconds( 1800 );
-  digitalWrite( IR_OUT, HIGH );
-  delayMicroseconds( 1800 );
-  digitalWrite( IR_OUT, LOW );
-  delayMicroseconds( 600 );
-  digitalWrite( IR_OUT, HIGH );
-  delayMicroseconds( 1200 );
-  digitalWrite( IR_OUT, LOW );
-  delayMicroseconds( 600 );
-  digitalWrite( IR_OUT, HIGH );
-  delayMicroseconds( 1200 );
-  digitalWrite( IR_OUT, LOW );
-  delayMicroseconds( 1800 );
-}
-
-void sendRed ( ) {
-  digitalWrite( IR_OUT, LOW );
-  delayMicroseconds( 1800 );
-  digitalWrite( IR_OUT, HIGH );
-  delayMicroseconds( 1800 );
-  digitalWrite( IR_OUT, LOW );
-  delayMicroseconds( 600 );
-  digitalWrite( IR_OUT, HIGH );
-  delayMicroseconds( 1200 );
-  digitalWrite( IR_OUT, LOW );
-  delayMicroseconds( 600 );
-  digitalWrite( IR_OUT, HIGH );
-  delayMicroseconds( 600 );
-  digitalWrite( IR_OUT, LOW );
-  delayMicroseconds( 1800 );
 }
 
 void update_LED ( int LED_COLOUR ) {
