@@ -89,18 +89,18 @@ void setup() {
 
 void loop() {
   if (irrecv.decode(&results)) {
-    Serial.println( "Found ir data" );
+    //Serial.println( "Found ir data" );
     if ((results.bits == 1) || (results.bits == 2)) {
       switch (results.value) {
         case CAPTURE_RED:
-          Serial.println( "Red Capture" );
+          //Serial.println( "Red Capture" );
           beacon_state = CAPTURED_RED;
           update_LED( LED_RED );
           if (resetEnabled)
             reset_at = millis() + resetTime;
           break;
         case CAPTURE_BLUE:
-          Serial.println( "Blue Capture" );
+          //Serial.println( "Blue Capture" );
           beacon_state = CAPTURED_BLUE;
           update_LED( LED_BLUE );
           if (resetEnabled)
@@ -193,4 +193,6 @@ void update_LED ( int LED_COLOUR ) {
   digitalWrite(LED_G_pin, green);
   digitalWrite(LED_B_pin, blue);
 }
+
+
 
