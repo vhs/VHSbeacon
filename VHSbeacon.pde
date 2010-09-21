@@ -88,26 +88,25 @@ void setup() {
 }
 
 void loop() {
-  /*
-   if (irrecv.decode(&results)) {
-     Serial.println( "Found ir data" );
-     if ((results.bits == 1) || (results.bits == 2)) {
-       switch (results.value) {
-         case CAPTURE_RED:
-           Serial.println( "Red Capture" );
-           beacon_state = CAPTURED_RED;
-           update_LED( LED_RED );
-           if (resetEnabled)
-             reset_at = millis() + resetTime;
-           break;
-         case CAPTURE_BLUE:
-           Serial.println( "Blue Capture" );
-           beacon_state = CAPTURED_BLUE;
-           update_LED( LED_BLUE );
-           if (resetEnabled)
-             reset_at = millis() + resetTime;
-           break;
-       }
+  if (irrecv.decode(&results)) {
+    Serial.println( "Found ir data" );
+    if ((results.bits == 1) || (results.bits == 2)) {
+      switch (results.value) {
+        case CAPTURE_RED:
+          Serial.println( "Red Capture" );
+          beacon_state = CAPTURED_RED;
+          update_LED( LED_RED );
+          if (resetEnabled)
+            reset_at = millis() + resetTime;
+          break;
+        case CAPTURE_BLUE:
+          Serial.println( "Blue Capture" );
+          beacon_state = CAPTURED_BLUE;
+          update_LED( LED_BLUE );
+          if (resetEnabled)
+            reset_at = millis() + resetTime;
+          break;
+      }
     }
     irrecv.resume(); // Receive the next value
   }
@@ -117,7 +116,6 @@ void loop() {
     update_LED( LED_GREEN );
     reset_at = 0;
   }
-  */
   
   // transmit beacon status
   if (IS_NEUTRAL) {
@@ -125,19 +123,19 @@ void loop() {
     //irsend.sendVHS(STATUS_BLUE, 2);
     sendBlue();
     sendRed();
-    delay( 1000 );
-    Serial.println( "Neutral send" );
+    //Serial.println( "Neutral send" );
   }
   else if (IS_BLUE) {
     //irsend.sendVHS(STATUS_RED, 2);
-    Serial.println( "Red send" );
+    //Serial.println( "Blue send" );
     sendBlue();
   }
   else if (IS_RED) {
     //irsend.sendVHS(STATUS_BLUE, 2);
-    Serial.println( "Blue send" );
+    //Serial.println( "Red send" );
     sendRed();
   }
+  delay(1);
 }
 
 void sendBlue ( ) {
@@ -154,7 +152,7 @@ void sendBlue ( ) {
   digitalWrite( IR_OUT, HIGH );
   delayMicroseconds( 1200 );
   digitalWrite( IR_OUT, LOW );
-  delayMicroseconds( 600 );
+  delayMicroseconds( 1800 );
 }
 
 void sendRed ( ) {
@@ -171,7 +169,7 @@ void sendRed ( ) {
   digitalWrite( IR_OUT, HIGH );
   delayMicroseconds( 600 );
   digitalWrite( IR_OUT, LOW );
-  delayMicroseconds( 600 );
+  delayMicroseconds( 1800 );
 }
 
 void update_LED ( int LED_COLOUR ) {
