@@ -39,7 +39,7 @@
 #define CAPTURED_BLUE 2
 int beacon_state = NEUTRAL;
 int resetEnabled = 1;
-int resetTime = 5000;
+int resetTime = 10000;
 
 #define IS_NEUTRAL (beacon_state == NEUTRAL)
 #define IS_RED     (beacon_state == CAPTURED_RED)
@@ -64,6 +64,8 @@ unsigned long reset_at = 0;
 IRsend irsend;
 decode_results results;
 IRrecv irrecv(4); // send ir input pin as argument
+unsigned long next_transmit = 0;
+unsigned long transmit_interval = 5000;
 
 void setup() {
   Serial.begin( 9600 );
@@ -84,23 +86,24 @@ void setup() {
   update_LED( LED_OFF );
   delay(400);
   update_LED( LED_GREEN ); // leave led as green at end of setup.
+  //digitalWrite( IR_OUT, HIGH );
   Serial.println( "Setup Complete" );
 }
 
 void loop() {
   if (irrecv.decode(&results)) {
-    //Serial.println( "Found ir data" );
+    Serial.println( "Found ir data" );
     if ((results.bits == 1) || (results.bits == 2)) {
       switch (results.value) {
         case CAPTURE_RED:
-          //Serial.println( "Red Capture" );
+          Serial.println( "Red Capture" );
           beacon_state = CAPTURED_RED;
           update_LED( LED_RED );
           if (resetEnabled)
             reset_at = millis() + resetTime;
           break;
         case CAPTURE_BLUE:
-          //Serial.println( "Blue Capture" );
+          Serial.println( "Blue Capture" );
           beacon_state = CAPTURED_BLUE;
           update_LED( LED_BLUE );
           if (resetEnabled)
@@ -118,18 +121,26 @@ void loop() {
   }
   
   // transmit beacon status
-  if (IS_NEUTRAL) {
-    irsend.sendVHS(STATUS_RED, 2);
-    delay(1);
-    irsend.sendVHS(STATUS_BLUE, 2);
+  if (millis() >= next_transmit) {
+    Serial.println( "Transmit" );
+    if (IS_NEUTRAL) {
+      Serial.println( "Neutral" );
+      irsend.sendVHS(STATUS_RED, 2);
+      delay(1);
+      irsend.sendVHS(STATUS_BLUE, 2);
+    }
+    else if (IS_BLUE) {
+      Serial.println( "Blue" );
+      irsend.sendVHS(STATUS_RED, 2);
+    }
+    else if (IS_RED) {
+      Serial.println( "Red" );
+      irsend.sendVHS(STATUS_BLUE, 2);
+    }
+    //delay(1);
+    next_transmit = millis() + transmit_interval;
+    irrecv.enableIRIn();
   }
-  else if (IS_BLUE) {
-    irsend.sendVHS(STATUS_RED, 2);
-  }
-  else if (IS_RED) {
-    irsend.sendVHS(STATUS_BLUE, 2);
-  }
-  delay(1);
 }
 
 void update_LED ( int LED_COLOUR ) {
